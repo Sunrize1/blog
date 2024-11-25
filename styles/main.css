@@ -1,0 +1,9 @@
+@import 'themes/light.css';
+@import 'themes/dark.css';
+@import 'layout.css';
+@import 'components/header.css';
+@import 'components/footer.css';
+@import 'components/registration.css';
+@import 'components/login.css';
+@import 'components/profile.css';
+@import 'components/popup.css';
