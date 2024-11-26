@@ -1,9 +1,10 @@
 body.light {
-  --background-color: #fefefe;
-  --text-color: #000000;
-  --primary-color: #006ee3;
-  --secondary-color: #013d7e;
-  --upper-color: #fdfdfd;
-  --input-background: #e9ecef; 
-  
+  --background-color: #f9f9f9;
+  --text-color: #333333;
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --upper-color: #ffffff;
+  --input-background: #e9ecef;
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }

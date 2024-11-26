@@ -7,3 +7,7 @@
 @import 'components/login.css';
 @import 'components/profile.css';
 @import 'components/popup.css';
+@import 'components/main.css';
+@import 'components/filter.css';
+@import 'components/post.css';
+@import 'components/pagination.css';

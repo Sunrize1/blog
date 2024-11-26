@@ -1,8 +1,8 @@
 .profile-container {
-  background-color: var(--form-background);
+  background-color: var(--upper-color);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23); 
+  box-shadow: 0 10px 20px var(--shadow-color), 0 6px 6px var(--shadow-color);
   max-width: 400px;
   margin: 0 auto;
 }

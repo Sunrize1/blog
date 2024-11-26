@@ -14,6 +14,10 @@ export class Router {
       this.handleRoute();
     }
 
+    updateUrl(path) {
+      history.pushState({}, '', path);
+    }
+
     redirect(path) {
       history.replaceState({}, '', path);
       this.handleRoute();

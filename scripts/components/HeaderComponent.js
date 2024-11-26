@@ -1,3 +1,5 @@
+// front/scripts/components/HeaderComponent.js
+
 import { BaseComponent } from './BaseComponent.js';
 import { toggleTheme } from '../utils/Utils.js';
 import { logoutUser } from '../utils/API.js';
@@ -18,6 +20,7 @@ export class HeaderComponent extends BaseComponent {
       <header class="header">
         <nav class="nav">
           <div class="center-links">
+            <a href="#" data-route="/main" class="nav-link">Main</a>
           </div>
           <div class="right-corner">
             ${stateManager.state.token ? `

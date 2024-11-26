@@ -12,7 +12,7 @@
   background-color: var(--upper-color);
   color: var(--text-color);
   border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px var(--shadow-color), 0 6px 6px var(--shadow-color);
 }
 
 #registration-form  h2 {
