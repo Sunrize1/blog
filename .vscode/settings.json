@@ -1,6 +1,6 @@
 {
     "editor.minimap.enabled": false,
-    "workbench.iconTheme": "vs-seti",
+    "workbench.iconTheme": "icons",
     "workbench.sideBar.location": "left",
     "workbench.statusBar.visible": false,
     "window.confirmSaveUntitledWorkspace": true

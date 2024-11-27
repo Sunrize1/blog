@@ -1,12 +1,15 @@
 import { BaseComponent } from './BaseComponent.js';
 import { formatDate } from '../utils/Utils.js';
+import { likePost, unlikePost } from '../utils/API.js';
+import { router } from '../main.js';
+import { PopupComponent } from './PopupComponent.js';
 
 export class PostComponent extends BaseComponent {
   constructor(post) {
     super();
+    this.theme = localStorage.getItem('theme');
     this.post = post;
     this.render();
-    this.setupReadMoreButton();
   }
 
   render() {
@@ -21,13 +24,16 @@ export class PostComponent extends BaseComponent {
         <p class="post-description">${this.post.description.substring(0, 300)}</p>
         ${this.post.description.length > 300 ? `<p class="read-more-button">Read More</p>` : ''}
         <div class="post-details">
-          <p><span class="like-icon">👍</span> ${this.post.likes}</p>
+        ${this.post.hasLike ? `<img src="./assets/like.png" class="like-icon" />` : `<img src="./assets/${this.theme}/icons/nonlike.png" class='like-icon'`}
+          <p> ${this.post.likes}</p>
           <p><span class="comment-icon">💬</span> ${this.post.commentsCount}</p>
           <p>Reading Time: ${this.post.readingTime} minutes</p>
           <p>${this.post.tags.map(tag => tag.name).join(', ')}</p>
         </div>
       </div>
     `;
+    this.setupReadMoreButton();
+    this.setupLikeButton();
   }
 
   setupReadMoreButton() {
@@ -44,6 +50,37 @@ export class PostComponent extends BaseComponent {
         }
         descriptionElement.classList.toggle('expanded');
       });
+    }
+  }
+
+  setupLikeButton() {
+    const likeButon = this.element.querySelector('.like-icon')
+    likeButon.addEventListener('click', () => {
+      this.post.hasLike ? this.unapplyLike() : this.applyLike();
+    })
+  }
+
+  async applyLike() {
+    try {
+      await likePost(this.post.id);
+      this.post.hasLike = true;
+      this.post.likes++;
+      this.render();
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+      router.navigate('/main');
+    }
+  }
+
+  async unapplyLike() {
+    try {
+      await unlikePost(this.post.id);
+      this.post.hasLike = false;
+      this.post.likes--;
+      this.render();
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+      router.navigate('/main');
     }
   }
 }

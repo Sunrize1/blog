@@ -109,3 +109,45 @@ export async function fetchPosts(filters) {
   }
   return responseData;
 }
+
+export async function likePost(postId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found.');
+  }
+
+  const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  if (!response.ok) {
+    throw new Error(responseData.title);
+  }
+}
+
+export async function unlikePost(postId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found.');
+  }
+
+  const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  if (!response.ok) {
+    throw new Error(responseData.title);
+  }
+}
