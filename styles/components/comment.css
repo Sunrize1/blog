@@ -1,0 +1,157 @@
+.comments {
+  margin-top: 2rem;
+}
+
+.comment {
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem ;
+  transition: background-color 0.3s ease;
+}
+
+.comment:hover {
+  background-color: var(--input-background);
+}
+
+.sub-comments {
+  margin-left: 2rem;
+  border-left: 2px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+.sub-comment {
+  margin-top: 1rem;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment-header p {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.comment-actions button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.comment-actions button:hover {
+  opacity: 0.7;
+}
+.comment-content {
+  font-size: large;
+}
+
+.delete-icon, .edit-icon {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.comment-input {
+  margin: 0.5rem 0;
+  color: var(--text-color);
+}
+
+.watch-answers {
+  color: var(--primary-color);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.answer-button {
+  color: var(--primary-color);
+  cursor: pointer;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.watch-answers:hover, .answer-button:hover   {
+  color: var(--secondary-color);
+}
+
+.answer-input-container, .edit-input-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.answer-input-container input, .edit-input-container input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.answer-input-container button, .edit-input-container button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.answer-input-container button:hover, .edit-input-container button:hover {
+  background-color: var(--secondary-color);
+}
+
+.comment-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+  background-color: var(--upper-color);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.comment-input-container textarea {
+  width: 100%;
+  align-self: center;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  resize: none;
+  transition: border-color 0.3s ease;
+}
+
+.comment-input-container textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.comment-input-container button {
+  align-self: flex-end;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.comment-input-container button:hover {
+  background-color: var(--secondary-color);
+}

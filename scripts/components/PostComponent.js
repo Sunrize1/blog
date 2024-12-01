@@ -1,5 +1,5 @@
 import { BaseComponent } from './BaseComponent.js';
-import { formatDate } from '../utils/Utils.js';
+import { formatDate, escapeHtml } from '../utils/Utils.js';
 import { likePost, unlikePost } from '../utils/API.js';
 import { router } from '../main.js';
 import { PopupComponent } from './PopupComponent.js';
@@ -17,23 +17,39 @@ export class PostComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="post-header">
         <p>${this.post.author} - ${formatDate(this.post.createTime)}</p>
-        <h2>${this.post.title}</h2>
+        <h2 class="post-title">${escapeHtml(this.post.title)}</h2>
       </div>
+
       <div class="post-content">
         ${this.post.image ? `<img src="${this.post.image}" alt="${this.post.title}" class="post-image" />` : ''}
-        <p class="post-description">${this.post.description.substring(0, 300)}</p>
+        <p class="post-description">${escapeHtml(this.post.description).substring(0, 300)}</p>
         ${this.post.description.length > 300 ? `<p class="read-more-button">Read More</p>` : ''}
         <div class="post-details">
-        ${this.post.hasLike ? `<img src="./assets/like.png" class="like-icon" />` : `<img src="./assets/${this.theme}/icons/nonlike.png" class='like-icon'`}
-          <p> ${this.post.likes}</p>
-          <p><span class="comment-icon">💬</span> ${this.post.commentsCount}</p>
+
+          <div class="post-likes">
+            ${this.post.hasLike ? 
+            `<img src="./assets/like.png" class="like-icon" />` 
+            : `<img src="./assets/${this.theme}/icons/nonlike.png" class='like-icon'`}
+
+            <p> ${this.post.likes}</p>
+          </div>
+
+          <div class="post-comments">
+              <img src="./assets/${this.theme}/icons/comment.png" class='like-icon'></img>
+              <p>${this.post.commentsCount}</p>
+          </div>
+
           <p>Reading Time: ${this.post.readingTime} minutes</p>
-          <p>${this.post.tags.map(tag => tag.name).join(', ')}</p>
+          
+          <div class="post-tags">
+            ${this.post.tags.map(tag => `<span class="tag">${tag.name}</span>`).join('')}
+          </div>
         </div>
       </div>
     `;
     this.setupReadMoreButton();
     this.setupLikeButton();
+    this.setupTitleClick();
   }
 
   setupReadMoreButton() {
@@ -81,6 +97,15 @@ export class PostComponent extends BaseComponent {
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
       router.navigate('/main');
+    }
+  }
+
+  setupTitleClick() {
+    const postTitle = this.element.querySelector('.post-title');
+    if (postTitle) {
+      postTitle.addEventListener('click', () => {
+        router.navigate(`/post/${this.post.id}`);
+      });
     }
   }
 }

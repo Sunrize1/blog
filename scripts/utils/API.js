@@ -1,5 +1,5 @@
 import { stateManager } from "./StateManager.js";
-
+// Tags endpoint
 export async function fetchTags() {
   const response = await fetch('https://blog.kreosoft.space/api/tag');
   if (!response.ok) {
@@ -33,7 +33,7 @@ export async function loginUser(data) {
   if (!response.ok) {
     throw new Error(responseData.message);
   }
-  localStorage.setItem('token', responseData.token);
+  stateManager.setToken(responseData.token);
   return responseData;
 }
 
@@ -77,6 +77,7 @@ export async function fetchProfile() {
   if (!response.ok) {
     throw new Error(responseData.message);
   }
+  stateManager.setUserId(responseData.id);
   return responseData;
 }
 
@@ -149,5 +150,82 @@ export async function unlikePost(postId) {
 
   if (!response.ok) {
     throw new Error(responseData.title);
+  }
+}
+
+export async function fetchPostById(postId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}`, {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+  if (!response.ok) {
+    throw new Error(response.title);
+  }
+  return await response.json();
+}
+
+
+//Comment endpoints
+export async function addComment(postId, commentData) {
+  const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/comment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(commentData)
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.title);
+  }
+  return response;
+}
+
+export async function fetchCommentTree(commentId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/comment/${commentId}/tree`);
+  if (!response.ok) {
+    throw new Error(response.title);
+  }
+  return await response.json();
+}
+
+export async function deleteComment(commentId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/comment/${commentId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.title);
+  }
+}
+
+export async function updateComment(commentId, commentData) {
+  const response = await fetch(`https://blog.kreosoft.space/api/comment/${commentId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(commentData)
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.title);
   }
 }

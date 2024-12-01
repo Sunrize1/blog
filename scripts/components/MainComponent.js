@@ -77,7 +77,7 @@ export class MainComponent extends BaseComponent {
   setupPagination() {
     const paginationContainer = document.getElementById('pagination')
     paginationContainer.innerHTML = '';
-    const paginationComponent = new PaginationComponent(this.pagination, this.handlePageChange.bind(this));
+    const paginationComponent = new PaginationComponent(this.pagination, this.handlePageChange);
     paginationComponent.mount(paginationContainer);
   }
 

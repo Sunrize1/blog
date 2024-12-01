@@ -15,6 +15,12 @@
     gap: 2rem;
   }
 
+  .post-likes, .post-comments {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .post-card {
     background-color: var(--upper-color);
     padding: 1.5rem;
@@ -25,6 +31,10 @@
     gap: 1.5rem;
     height: auto;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .post-title {
+    cursor: pointer;
   }
 
   .post-header {
@@ -68,11 +78,17 @@
 
   .post-details {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     margin-top: 1.5rem;
     border-top: 1px solid var(--border-color);
     padding-top: 1rem;
+  }
+
+  .post-tags {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .post-details p {
@@ -99,3 +115,6 @@
   .read-more-button:hover {
     color: var(--secondary-color);
   }
+
+
+

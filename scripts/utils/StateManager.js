@@ -3,12 +3,17 @@ class StateManager {
     this.state = {
       token: localStorage.getItem('token'),
       email: localStorage.getItem('email'),
+      userId: localStorage.getItem('userId'),
     };
     this.stateChangeListeners = [];
   }
 
   getToken() {
     return this.state.token;
+  }
+
+  getUserId() {
+    return this.state.userId;
   }
 
   setToken(token) {
@@ -23,11 +28,19 @@ class StateManager {
     this.notifyStateChange();
   }
 
+  setUserId(userId) {
+    this.state.userId = userId;
+    localStorage.setItem('userId', userId);
+    this.notifyStateChange();
+  }
+
   unsetState() {
     this.state.token = null;
     this.state.email = null;
+    this.state.userId = null;
     localStorage.removeItem('token');
     localStorage.removeItem('email');
+    localStorage.removeItem('userId');
     this.notifyStateChange();
   }
 
