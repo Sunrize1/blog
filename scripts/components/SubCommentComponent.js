@@ -1,5 +1,5 @@
 import { BaseComponent } from "./BaseComponent.js";
-import { formatDate } from '../utils/Utils.js';
+import { formatDate, escapeHtml } from '../utils/Utils.js';
 import { deleteComment, addComment, updateComment } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { stateManager } from '../utils/StateManager.js';
@@ -21,9 +21,12 @@ export class SubCommentComponent extends BaseComponent {
     this.element.innerHTML = ``;
     this.element.innerHTML = `
       <div class="comment-header">
+        <div class="comment-info">
         ${this.isDeleted ? 
-            `<p>[Комментарий удален] - ${formatDate(this.comment.deleteDate)}</p>` 
-            : `<p>${this.comment.author} - ${formatDate(this.comment.createTime)}</p>` }
+          `<p>[Комментарий удален] - ${formatDate(this.comment.deleteDate)}</p>` 
+          : `<p>${escapeHtml(this.comment.author)} - ${formatDate(this.comment.createTime)}</p>` }
+        ${this.comment.modifiedDate && !this.isDeleted ? `<p title="${formatDate(this.comment.modifiedDate)}" >(Изменено)</p>`: ''}
+        </div>
         <div class="comment-actions">
           <button class="answer-button">Reply</button>
           ${(this.comment.authorId === stateManager.state.userId && !this.isDeleted) ? `
@@ -90,6 +93,7 @@ export class SubCommentComponent extends BaseComponent {
         await updateComment(this.comment.id, { content });
         new PopupComponent({ message: 'Comment updated successfully' }).mount(document.body);
         this.comment.content = content;
+        this.comment.modifiedDate = new Date()
         this.render();
       } catch (error) {
         new PopupComponent({ message: error.message }).mount(document.body);

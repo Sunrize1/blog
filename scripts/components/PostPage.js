@@ -55,7 +55,7 @@ export class PostPage extends BaseComponent {
   }
 
   setupCommentForm() {
-    const commentInput = this.element.querySelector('#comment-content');
+    const commentInput = this.element.querySelector('#comment-input');
     const submitCommentButton = this.element.querySelector('#submit-comment-button');
 
     submitCommentButton.addEventListener('click', async (e) => {

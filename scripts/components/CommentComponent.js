@@ -1,5 +1,5 @@
 import { BaseComponent } from "./BaseComponent.js";
-import { formatDate } from '../utils/Utils.js';
+import { formatDate, escapeHtml } from '../utils/Utils.js';
 import { fetchCommentTree, addComment, deleteComment, updateComment } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { stateManager } from '../utils/StateManager.js';
@@ -20,20 +20,24 @@ export class CommentComponent extends BaseComponent {
     this.element.innerHTML = ``;
     this.element.innerHTML = `
       <div class="comment-header">
+        <div class="comment-info">
         ${this.isDeleted ? 
           `<p>[Комментарий удален] - ${formatDate(this.comment.deleteDate)}</p>` 
-          : `<p>${this.comment.author} - ${formatDate(this.comment.createTime)}</p>` }
+          : `<p>${escapeHtml(this.comment.author)} - ${formatDate(this.comment.createTime)}</p>` }
+        ${this.comment.modifiedDate && !this.isDeleted ? `<p title="${formatDate(this.comment.modifiedDate)}" >(Изменено)</p>`: ''}
+        </div>
+
         <div class="comment-actions">
           <button class="answer-button">Reply</button>
           ${(this.comment.authorId === stateManager.state.userId && !this.isDeleted) ? `
             <img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete">
             <img src="./assets/${this.theme}/icons/edit.png" class="edit-icon" alt="Edit">
           ` : ''}
-          ${(this.isDeleted && this.comment.subComments == 0) ? 
+          ${(this.isDeleted && this.comment.subComments == 0 && this.comment.authorId === stateManager.state.userId) ? 
             `<img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete"></img>` : ''}
         </div>
       </div>
-      ${this.isDeleted ? `<p class="comment-content">[Комментарий удален]</p>` : `<p class="comment-content">${this.comment.content}</p>`}
+      ${this.isDeleted ? `<p class="comment-content">[Комментарий удален]</p>` : `<p class="comment-content">${escapeHtml(this.comment.content)}</p>`}
       ${this.comment.subComments > 0 ? `<span class="watch-answers">Watch answers</span>` : ''}
       <div class="answer-input-container" style="display: none;">
         <input type="text" class="answer-input" placeholder="Write your answer...">
@@ -203,6 +207,7 @@ export class CommentComponent extends BaseComponent {
         await updateComment(this.comment.id, { content });
         new PopupComponent({ message: 'Comment updated successfully' }).mount(document.body);
         this.comment.content = content;
+        this.comment.modifiedDate = new Date()
         this.render();
       } catch (error) {
         new PopupComponent({ message: error.message }).mount(document.body);
