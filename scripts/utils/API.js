@@ -1,4 +1,21 @@
 import { stateManager } from "./StateManager.js";
+//Address enpoints
+export async function fetchAddressSearch(parent, query) {
+  const response = await fetch(`/api/address/search?parentObjectId=${parent}&query=${query}`);
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
+export async function fetchAddressChain(objectGuid) {
+  const response = await fetch(`/api/address/chain?objectGuid=${objectGuid}`);
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
 // Tags endpoint
 export async function fetchTags() {
   const response = await fetch('https://blog.kreosoft.space/api/tag');
@@ -161,6 +178,29 @@ export async function fetchPostById(postId) {
     throw new Error(response.title);
   }
   return await response.json();
+}
+
+export async function addPost(data) {
+  const response = await fetch('https://blog.kreosoft.space/api/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Unauthorized");
+  }
+
+  const responseData = await response.json();
+  if (!response.ok) {
+    throw new Error(responseData.message);
+  }
+
+  return responseData;
 }
 
 

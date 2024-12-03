@@ -1,11 +1,11 @@
 import { BaseComponent } from './BaseComponent.js';
-import { fetchPosts, fetchTags } from '../utils/API.js';
+import { fetchPosts, fetchTags, addPost } from '../utils/API.js';
 import { router } from '../main.js';
 import { PostComponent } from './PostComponent.js';
 import { FilterComponent } from './FilterComponent.js';
 import { PaginationComponent } from './PaginationComponent.js';
 import { PopupComponent } from './PopupComponent.js';
-
+import { CreatePostComponent } from './CreatePostComponent.js';
 
 export class MainComponent extends BaseComponent {
   constructor() {
@@ -13,22 +13,23 @@ export class MainComponent extends BaseComponent {
     this.tags = [];
     this.posts = [];
     this.pagination = {};
-
     this.render();
-    this.fetchAndDisplayFilter();
-    this.fetchAndDisplayPosts();
-    
   }
 
   render() {
     this.element.className = 'main-container';
+    this.element.innerHTML = ``;
     this.element.innerHTML = `
+      <button id="create-post-button" class="create-post-button">Create Post</button>
       <div id="filter"></div>
       <div id="posts"></div>
       <div id="pagination"></div>
     `;
-  }
 
+    this.fetchAndDisplayFilter();
+    this.fetchAndDisplayPosts();
+    this.setupCreatePostButton();
+  }
 
   async fetchAndDisplayPosts() {
     try {
@@ -58,7 +59,7 @@ export class MainComponent extends BaseComponent {
     }
   }
 
-  setupFilter(tags) {
+  setupFilter() {
     const filterContainer = document.getElementById('filter')
     filterContainer.innerHTML = '';
     const filterComponent = new FilterComponent(this.tags, this.fetchAndDisplayPosts.bind(this));
@@ -86,5 +87,13 @@ export class MainComponent extends BaseComponent {
     urlParams.set('page', newPage);
     router.navigate(`/main?${urlParams.toString()}`);
     await this.fetchAndDisplayPosts();
+  }
+
+  setupCreatePostButton() {
+    const createPostButton = this.element.querySelector('#create-post-button');
+    createPostButton.addEventListener('click', () => {
+      const createPostComponent = new CreatePostComponent();
+      createPostComponent.mount(document.body);
+    });
   }
 }

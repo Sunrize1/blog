@@ -4,3 +4,19 @@
   gap: 2rem;
   margin-bottom: 3.5rem;
 }
+
+.create-post-button {
+  align-self: flex-end;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.create-post-button:hover {
+  background-color: var(--secondary-color);
+}
