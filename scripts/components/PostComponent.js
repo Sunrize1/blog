@@ -25,9 +25,14 @@ export class PostComponent extends BaseComponent {
     this.element.className = 'post-card';
     this.element.innerHTML = `
       <div class="post-header">
-        <p>${this.post.author} - ${formatDate(this.post.createTime)}</p>
-        <p class="post-address">${this.addressChain.map(address => address.text).join(', ')}</p>
-        <h2 class="post-title">${escapeHtml(this.post.title)}</h2>
+        <div class="post-info">
+          <p class="post-author">${this.post.author} - ${formatDate(this.post.createTime)}</p>
+          <h2 class="post-title">${escapeHtml(this.post.title)}</h2>
+        </div>
+        <div class="post-geoposition">
+          ${this.addressChain[0] ? `<img src="./assets/${this.theme}/icons/geo.png" class='geo-icon'></img>` : ''}
+          <p class="post-address">${this.addressChain.map(address => address.text).join(', ')}</p>
+        </div>
       </div>
 
       <div class="post-content">

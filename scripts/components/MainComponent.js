@@ -6,6 +6,7 @@ import { FilterComponent } from './FilterComponent.js';
 import { PaginationComponent } from './PaginationComponent.js';
 import { PopupComponent } from './PopupComponent.js';
 import { CreatePostComponent } from './CreatePostComponent.js';
+import { stateManager } from '../utils/StateManager.js';
 
 export class MainComponent extends BaseComponent {
   constructor() {
@@ -20,7 +21,7 @@ export class MainComponent extends BaseComponent {
     this.element.className = 'main-container';
     this.element.innerHTML = ``;
     this.element.innerHTML = `
-      <button id="create-post-button" class="create-post-button">Create Post</button>
+      ${stateManager.getToken() ? `<button id="create-post-button" class="create-post-button">Create Post</button>` : ''}
       <div id="filter"></div>
       <div id="posts"></div>
       <div id="pagination"></div>
@@ -28,7 +29,7 @@ export class MainComponent extends BaseComponent {
 
     this.fetchAndDisplayFilter();
     this.fetchAndDisplayPosts();
-    this.setupCreatePostButton();
+    if(stateManager.getToken()) this.setupCreatePostButton;
   }
 
   async fetchAndDisplayPosts() {
