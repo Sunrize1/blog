@@ -3,13 +3,22 @@ import { formatDate, escapeHtml } from '../utils/Utils.js';
 import { likePost, unlikePost } from '../utils/API.js';
 import { router } from '../main.js';
 import { PopupComponent } from './PopupComponent.js';
+import { fetchAddressChain } from '../utils/API.js';
 
 export class PostComponent extends BaseComponent {
   constructor(post) {
     super();
     this.theme = localStorage.getItem('theme');
     this.post = post;
-    this.render();
+    this.addressChain = [];
+    this.fetchAndDisplayPost();
+  }
+
+  async fetchAndDisplayPost() {
+      if(this.post.addressId) {
+        this.addressChain = await fetchAddressChain(this.post.addressId);
+      }
+      this.render()
   }
 
   render() {
@@ -17,6 +26,7 @@ export class PostComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="post-header">
         <p>${this.post.author} - ${formatDate(this.post.createTime)}</p>
+        <p class="post-address">${this.addressChain.map(address => address.text).join(', ')}</p>
         <h2 class="post-title">${escapeHtml(this.post.title)}</h2>
       </div>
 

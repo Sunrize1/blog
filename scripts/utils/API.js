@@ -1,15 +1,26 @@
 import { stateManager } from "./StateManager.js";
 //Address enpoints
-export async function fetchAddressSearch(parent, query) {
-  const response = await fetch(`/api/address/search?parentObjectId=${parent}&query=${query}`);
+export async function fetchAddressSearch(query, parent) {
+  const queryParams = new URLSearchParams();
+  if(parent) {
+    queryParams.append('parentObjectId', parent);
+  }
+  if(query) {
+    queryParams.append('query', query);
+  }
+
+  const response = await fetch(`https://blog.kreosoft.space/api/address/search?${queryParams.toString()}`);
   if (!response.ok) {
     throw new Error(response.message);
   }
-  return await response.json();
+
+  const responseData = await response.json();
+
+  return responseData;
 }
 
 export async function fetchAddressChain(objectGuid) {
-  const response = await fetch(`/api/address/chain?objectGuid=${objectGuid}`);
+  const response = await fetch(`https://blog.kreosoft.space/api/address/chain?objectGuid=${objectGuid}`);
   if (!response.ok) {
     throw new Error(response.message);
   }

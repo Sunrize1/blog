@@ -2,27 +2,24 @@ import { BaseComponent } from './BaseComponent.js';
 import { addPost, fetchAddressSearch, fetchAddressChain } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { fetchTags } from '../utils/API.js';
+import { router } from '../main.js';
 
 export class CreatePostComponent extends BaseComponent {
   constructor() {
     super();
     this.tags = [];
-    this.addressChain = [];
+    this.address = null;
+    this.currentObjectId = null;
     this.fetchAndDisplayTags();
   }
 
   async fetchAndDisplayTags() {
-    try {
-      this.tags = await fetchTags();
-      this.render();
-      this.setupForm();
-      this.setupInputTags();
-    } catch (error) {
-      new PopupComponent({ message: error.message }).mount(document.body);
-    }
+    this.tags = await fetchTags();
+    this.render();
   }
 
   render() {
+    this.element.className = 'create-overlay';
     this.element.innerHTML = `
       <div class="create-post-container">
         <form class="create-post-form">
@@ -42,17 +39,17 @@ export class CreatePostComponent extends BaseComponent {
           </div>
           <div class="address-input-group">
             <label for="region">Субъект РФ</label>
-            <select id="region" class="address-select"></select>
-          </div>
-          <div class="address-input-group" id="next-address-element" style="display: none;">
-            <label id="next-address-label">Следующий элемент адреса</label>
-            <select id="next-address-select" class="address-select"></select>
+            <input type="text" id="region-select" list="region-datalist" class="address-select"></input>
+            <datalist id="region-datalist"></datalist>
           </div>
           <button type="submit">Create Post</button>
           <button type="button" class="close-button">Close</button>
         </form>
       </div>
     `;
+    this.setupRegionSelect();
+    this.setupForm();
+    this.setupInputTags();
   }
 
   setupForm() {
@@ -64,18 +61,13 @@ export class CreatePostComponent extends BaseComponent {
       const data = {
         title: this.element.querySelector('#title').value,
         description: this.element.querySelector('#description').value,
-        image: this.element.querySelector('#image').value,
         readingTime: this.element.querySelector('#readingTime').value,
+        image: this.element.querySelector('#image').value,
+        addressId: this.address,
         tags: Array.from(this.element.querySelectorAll('.tag')).map(tag => tag.querySelector('.remove-tag').getAttribute('data-tag-id')),
-        addressChain: this.addressChain,
       };
-      try {
-        await addPost(data);
-        new PopupComponent({ message: 'Post created successfully' }).mount(document.body);
-        this.unmount();
-      } catch (error) {
-        new PopupComponent({ message: error.message }).mount(document.body);
-      }
+      
+      await this.createPost(data);
     });
 
     closeButton.addEventListener('click', () => {
@@ -105,7 +97,6 @@ export class CreatePostComponent extends BaseComponent {
         this.setupTags();
       });
     });
-
   }
 
   setupTags() {
@@ -118,5 +109,139 @@ export class CreatePostComponent extends BaseComponent {
       });
     });
   }
+
+  setupRegionSelect() {
+    const regionInput = this.element.querySelector('#region-select');
+    const datalist = this.element.querySelector('#region-datalist');
+
+    regionInput.addEventListener('input', async () => {
+      datalist.innerHTML = '';
+        const regions = await this.fetchAddress(regionInput.value);
+
+        regions.forEach(region => {
+          const option = document.createElement('option');
+          option.value = region.text;
+          option.dataset.objectId = region.objectId;
+          option.dataset.guid = region.objectGuid;
+          option.dataset.objectLevel = region.objectLevel;
+          datalist.appendChild(option);
+        });
+    });
+
+    regionInput.addEventListener('change', () => {
+      const selectedOption = Array.from(datalist.children).find(option => option.value === regionInput.value);
+      if (selectedOption) {
+        const objectLevel = selectedOption.dataset.objectLevel;
+        this.address = selectedOption.dataset.guid;
+        this.currentObjectId = selectedOption.dataset.objectId;
+
+        if (objectLevel !== 'Building') {
+          this.setupNextAddress(this.currentObjectId, regionInput, selectedOption.dataset.guid);
+        }
+      } else {
+        this.resetAddressInputs(regionInput);
+      }
+    });
+  }
+
+  setupNextAddress(parentId, parentElem, parentGuid) {
+    const inputGroup = this.createAddressInputGroup();
+    parentElem.insertAdjacentElement('afterend', inputGroup);
+
+    const input = inputGroup.querySelector('input');
+    const datalist = inputGroup.querySelector('datalist');
+
+    input.value = '';
+    datalist.innerHTML = '';
+    inputGroup.style.display = 'flex';
+
+    input.addEventListener('input', async () => {
+      datalist.innerHTML = '';
+        const nextAddresses = await this.fetchAddress('', parentId);
+
+        nextAddresses.forEach(addr => {
+          const option = document.createElement('option');
+          option.value = addr.text;
+          option.dataset.objectId = addr.objectId;
+          option.dataset.guid = addr.objectGuid;
+          option.dataset.objectLevel = addr.objectLevel;
+          option.dataset.objectLevelText = addr.objectLevelText;
+          datalist.appendChild(option);
+        });
+    });
+
+    input.addEventListener('change', () => {
+      const selectedOption = Array.from(datalist.children).find(option => option.value === input.value);
+      if (selectedOption) {
+        const ObjectLevel = selectedOption.dataset.objectLevel;
+        const ObjectLevelText = selectedOption.dataset.objectLevelText;
+        this.address = selectedOption.dataset.guid;
+        this.currentObjectId = selectedOption.dataset.objectId;
+
+        this.updateAddressInput(inputGroup, ObjectLevel, ObjectLevelText);
+        this.resetAddressInputs(inputGroup);
+
+        if (ObjectLevel !== 'Building') {
+          this.setupNextAddress(this.currentObjectId, inputGroup, parentGuid);
+        }
+      } else {
+        this.resetAddressInputs(inputGroup);
+        this.address = parentGuid;
+      }
+    });
+  }
+
+  createAddressInputGroup() {
+    const inputGroup = document.createElement('div');
+    inputGroup.className = 'address-input-group';
+    inputGroup.id = 'next-address';
+    inputGroup.innerHTML = `
+      <label>Следующий элемент аддреса</label>
+      <input type="text" list="next-address-select" class="address-select"></input>
+      <datalist id="next-address-select"></datalist>
+    `;
+    return inputGroup;
+  }
+
+  updateAddressInput(inputGroup, inputId, placeholder) {
+    const label = inputGroup.querySelector('label');
+    const input = inputGroup.querySelector('input');
+    const datalist = inputGroup.querySelector('datalist');
   
+    inputGroup.id = inputId;
+    label.textContent = placeholder;
+    input.setAttribute('list', `${inputId}-select`);
+    datalist.id = `${inputId}-select`;
+  }
+
+  resetAddressInputs(parentElem) {
+    let nextInputGroup = parentElem.nextElementSibling;
+    while (nextInputGroup) {
+      const nextNextInputGroup = nextInputGroup.nextElementSibling;
+      nextInputGroup.remove();
+      nextInputGroup = nextNextInputGroup;
+    }
+
+  }
+
+  async fetchAddress(query, parent) {
+    try {
+      const formattedQuery = query.split(' ').slice(1).join(' ').trim();
+      const response = await fetchAddressSearch(formattedQuery, parent);
+      return response;
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+    }
+  }
+
+  async createPost(data) {
+    try {
+      await addPost(data);
+      new PopupComponent({ message: 'Post created successfully' }).mount(document.body);
+      this.unmount();
+      router.navigate('/main');
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+    }
+  }
 }
