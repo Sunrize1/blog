@@ -5,6 +5,7 @@ import { LoginComponent } from './components/LoginComponent.js';
 import { FooterComponent } from './components/FooterComponent.js';
 import { ProfileComponent } from './components/ProfileComponent.js';
 import { MainComponent } from './components/MainComponent.js';
+import { AuthorsComponent } from './components/AuthorsComponent.js';
 import { PostPage } from './components/PostPage.js';
 
 export const router = new Router();
@@ -14,6 +15,7 @@ router.addRoute('/login', LoginComponent);
 router.addRoute('/profile', ProfileComponent);
 router.addRoute('/main', MainComponent);
 router.addRoute('/post/:postId', PostPage);
+router.addRoute('/authors', AuthorsComponent);
 
 const headerElement = document.getElementById('header');
 const headerComponent = new HeaderComponent();

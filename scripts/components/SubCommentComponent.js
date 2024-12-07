@@ -33,7 +33,7 @@ export class SubCommentComponent extends BaseComponent {
             <img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete">
             <img src="./assets/${this.theme}/icons/edit.png" class="edit-icon" alt="Edit">
           ` : ''}
-          ${(this.isDeleted && this.comment.subComments == 0) ?
+          ${(this.isDeleted && this.comment.subComments == 0 && this.comment.authorId === stateManager.state.userId) ?
             `<img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete"></img>` : ''}
         </div>
       </div>
@@ -58,7 +58,7 @@ export class SubCommentComponent extends BaseComponent {
       this.setupEditButton();
     }
 
-    if (this.isDeleted && this.comment.subComments == 0) {
+    if (this.isDeleted && this.comment.subComments == 0 && this.comment.authorId === stateManager.state.userId) {
       this.setupDeleteButton();
     }
   }

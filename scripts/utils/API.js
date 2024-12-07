@@ -27,6 +27,15 @@ export async function fetchAddressChain(objectGuid) {
   return await response.json();
 }
 
+//Authors endpoints
+export async function fetchAuthors() {
+  const response = await fetch('https://blog.kreosoft.space/api/author/list');
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
 // Tags endpoint
 export async function fetchTags() {
   const response = await fetch('https://blog.kreosoft.space/api/tag');

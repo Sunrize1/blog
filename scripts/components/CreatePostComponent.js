@@ -157,7 +157,7 @@ export class CreatePostComponent extends BaseComponent {
 
     input.addEventListener('input', async () => {
       datalist.innerHTML = '';
-        const nextAddresses = await this.fetchAddress('', parentId);
+        const nextAddresses = await this.fetchAddress(input.value, parentId);
 
         nextAddresses.forEach(addr => {
           const option = document.createElement('option');
@@ -226,7 +226,10 @@ export class CreatePostComponent extends BaseComponent {
 
   async fetchAddress(query, parent) {
     try {
-      const formattedQuery = query.split(' ').slice(1).join(' ').trim();
+      let formattedQuery = query;
+      if (query.includes(' ')) {
+        formattedQuery = query.split(' ').slice(1).join(' ').trim();
+      }
       const response = await fetchAddressSearch(formattedQuery, parent);
       return response;
     } catch (error) {

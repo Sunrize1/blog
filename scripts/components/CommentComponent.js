@@ -60,7 +60,7 @@ export class CommentComponent extends BaseComponent {
       this.setupEditButton();
     }
 
-    if (this.isDeleted && this.comment.subComments == 0) {
+    if (this.isDeleted && this.comment.subComments == 0 && this.comment.authorId === stateManager.state.userId) {
       this.setupDeleteButton();
     }
   }

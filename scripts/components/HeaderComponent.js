@@ -17,25 +17,26 @@ export class HeaderComponent extends BaseComponent {
 
   render() {
     this.element.innerHTML = `
-      <header class="header">
-        <nav class="nav">
-          <div class="center-links">
-            <a href="#" data-route="/main" class="nav-link">Main</a>
-          </div>
-          <div class="right-corner">
-            ${stateManager.state.token ? `
-              <div class="dropdown">
-                <span class="user-email">${stateManager.state.email}</span>
-                <div class="dropdown-content">
-                  <a href="#" data-route="/profile" class="nav-link">Profile</a>
-                  <a href="#" data-route="/logout" id="logout" class="nav-link">Logout</a>
-                </div>
+    <header class="header">
+      <nav class="nav">
+        <div class="center-links">
+          <a href="#" data-route="/main" class="nav-link">Main</a>
+          <a href="#" data-route="/authors" class="nav-link">Authors</a>
+        </div>
+        <div class="right-corner">
+          ${stateManager.state.token ? `
+            <div class="dropdown">
+              <span class="user-email">${stateManager.state.email}</span>
+              <div class="dropdown-content">
+                <a href="#" data-route="/profile" class="nav-link">Profile</a>
+                <a href="#" data-route="/logout" id="logout" class="nav-link">Logout</a>
               </div>
-            ` : '<a href="#" data-route="/login" class="nav-link">Login</a>'}
-            ${!stateManager.state.token ? `<a href="#" data-route="/register" class="nav-link">Register</a>` : ''}
-          </div>
-        </nav>
-      </header>
+            </div>
+          ` : '<a href="#" data-route="/login" class="nav-link">Login</a>'}
+          ${!stateManager.state.token ? `<a href="#" data-route="/register" class="nav-link">Register</a>` : ''}
+        </div>
+      </nav>
+    </header>
     `;
   }
 

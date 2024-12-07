@@ -29,7 +29,7 @@ export class MainComponent extends BaseComponent {
 
     this.fetchAndDisplayFilter();
     this.fetchAndDisplayPosts();
-    if(stateManager.getToken()) this.setupCreatePostButton;
+    if(stateManager.getToken()) this.setupCreatePostButton();
   }
 
   async fetchAndDisplayPosts() {

@@ -12,4 +12,5 @@
 @import 'components/post.css';
 @import 'components/pagination.css';
 @import 'components/comment.css';
-@import 'components/create.css'
+@import 'components/create.css';
+@import 'components/authors.css';
