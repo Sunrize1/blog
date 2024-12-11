@@ -15,10 +15,10 @@ export class LoginComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="login-container">
         <form class="login-form">
-          <h2>Login</h2>
+          <h2>Вход</h2>
           <input type="email" id="email" placeholder="Email" required />
-          <input type="password" id="password" placeholder="Password" required />
-          <button type="submit">Login</button>
+          <input type="password" id="password" placeholder="Пароль" required />
+          <button type="submit">Войти</button>
         </form>
       </div>
     `;
@@ -34,7 +34,6 @@ export class LoginComponent extends BaseComponent {
       };
       try {
         const responseData = await loginUser(data);
-        new PopupComponent({message : "Login Successful"}).mount(document.body);
         stateManager.setToken(responseData.token);
         stateManager.setEmail(data.email);
         router.navigate('/profile');

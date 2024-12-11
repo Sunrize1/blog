@@ -19,8 +19,8 @@ export class PostPage extends BaseComponent {
       <div class="post"></div>
       <div class="comments"></div>
       <div class="comment-input-container">
-        <textarea id="comment-input" placeholder="Add a comment..." required></textarea>
-        <button id="submit-comment-button">Add Comment</button>
+        <textarea id="comment-input" placeholder="Оставить комментарий..." required></textarea>
+        <button id="submit-comment-button">Отправить</button>
       </div>
     `;
 
@@ -63,7 +63,6 @@ export class PostPage extends BaseComponent {
       const content = commentInput.value;
       try {
         await addComment(this.postId, { content });
-        new PopupComponent({ message: 'Comment added successfully' }).mount(document.body);
         this.fetchAndDisplayPost();
         commentInput.value = '';
       } catch (error) {

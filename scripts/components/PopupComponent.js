@@ -12,7 +12,7 @@ export class PopupComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="popup">
         <p>${this.response.message}</p>
-        <button class="close-button">Close</button>
+        <button class="close-button">Закрыть</button>
       </div>
     `;
   }

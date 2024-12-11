@@ -13,11 +13,11 @@ export class PaginationComponent extends BaseComponent {
   render() {
     this.element.innerHTML = `
       <div class="pagination">
-        ${this.pagination.current > 1 ? `<button class="prev-page">Previous</button>` : ''}
+        ${this.pagination.current > 1 ? `<button class="prev-page">Предыдущая</button>` : ''}
         <span>Page ${this.pagination.current} of ${this.pagination.count}</span>
-        ${this.pagination.current < this.pagination.count ? `<button class="next-page">Next</button>` : ''}
+        ${this.pagination.current < this.pagination.count ? `<button class="next-page">Следующая</button>` : ''}
         <div class="pagination-size-filter">
-          <label for="pagination-size">Posts per page:</label>
+          <label for="pagination-size">Постов на странице</label>
           <input type="number" id="pagination-size" min="1" value="${this.pagination.size}" />
         </div>
       </div>

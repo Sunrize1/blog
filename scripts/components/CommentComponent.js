@@ -28,7 +28,7 @@ export class CommentComponent extends BaseComponent {
         </div>
 
         <div class="comment-actions">
-          <button class="answer-button">Reply</button>
+          <button class="answer-button">Ответить</button>
           ${(this.comment.authorId === stateManager.state.userId && !this.isDeleted) ? `
             <img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete">
             <img src="./assets/${this.theme}/icons/edit.png" class="edit-icon" alt="Edit">
@@ -38,16 +38,16 @@ export class CommentComponent extends BaseComponent {
         </div>
       </div>
       ${this.isDeleted ? `<p class="comment-content">[Комментарий удален]</p>` : `<p class="comment-content">${escapeHtml(this.comment.content)}</p>`}
-      ${this.comment.subComments > 0 ? `<span class="watch-answers">Watch answers</span>` : ''}
+      ${this.comment.subComments > 0 ? `<span class="watch-answers">Раскрыть ответы</span>` : ''}
       <div class="answer-input-container" style="display: none;">
-        <input type="text" class="answer-input" placeholder="Write your answer...">
-        <button class="submit-answer-button">Answer</button>
-        <button class="close-answer-button">Close</button>
+        <input type="text" class="answer-input" placeholder="Напишите ответ...">
+        <button class="submit-answer-button">Отправить</button>
+        <button class="close-answer-button">Закрыть</button>
       </div>
       <div class="edit-input-container" style="display: none;">
         <input type="text" class="edit-input" value="${this.comment.content}">
-        <button class="submit-edit-button">Edit</button>
-        <button class="close-edit-button">Close</button>
+        <button class="submit-edit-button">Редактировать</button>
+        <button class="close-edit-button">Закрыть</button>
       </div>
       <div class="sub-comments"></div>
     `;
@@ -74,12 +74,12 @@ export class CommentComponent extends BaseComponent {
 
         if (subCommentsContainer.innerHTML) {
           subCommentsContainer.innerHTML = ``;
-          watchAnswersButton.textContent = `Watch answers`;
+          watchAnswersButton.textContent = `Раскрыть ответы`;
         } 
 
         else {
           await this.fetchAndDisplayComments();
-          watchAnswersButton.textContent = 'Hide answers';
+          watchAnswersButton.textContent = 'Скрыть ответы';
         }
       });
     }
@@ -138,7 +138,6 @@ export class CommentComponent extends BaseComponent {
       try {
         await addComment(this.postId, { content, parentId: this.comment.id });
         this.comment.subComments++;
-        new PopupComponent({ message: 'Answer added successfully' }).mount(document.body);
         this.fetchAndDisplayComments();
       } catch (error) {
         new PopupComponent({ message: error.message }).mount(document.body);
@@ -170,7 +169,6 @@ export class CommentComponent extends BaseComponent {
   async deleteCommentOfPost() {
     try {
       await deleteComment(this.comment.id);
-      new PopupComponent({ message: 'Comment deleted successfully' }).mount(document.body);
       return true;
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
@@ -205,7 +203,6 @@ export class CommentComponent extends BaseComponent {
     if (content) {
       try {
         await updateComment(this.comment.id, { content });
-        new PopupComponent({ message: 'Comment updated successfully' }).mount(document.body);
         this.comment.content = content;
         this.comment.modifiedDate = new Date()
         this.render();
@@ -215,7 +212,7 @@ export class CommentComponent extends BaseComponent {
     } 
 
     else {
-      new PopupComponent({ message: "No content found" }).mount(document.body);
+      new PopupComponent({ message: "Контент не найден" }).mount(document.body);
     }
   }
 

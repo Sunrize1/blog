@@ -3,10 +3,11 @@ import { router } from '../main.js';
 
 
 export class FilterComponent extends BaseComponent {
-  constructor(tags, onFilterChange) {
+  constructor(tags, onFilterChange, isCommunity) {
     super();
     this.onFilterChange = onFilterChange;
     this.tags = tags
+    this.isCommunity = isCommunity;
     this.render();
     this.setupForm();
     
@@ -20,10 +21,10 @@ export class FilterComponent extends BaseComponent {
     this.element.innerHTML = `
       <form id="filter-form">
         <div class="filter-group">
-          <label for="tags">Tags</label>
+          <label for="tags">Тэги</label>
           <div class="tags-container">
             <div class="tags-input">
-            <input type="text" id="tags-input" placeholder="Select tags" readonly />
+            <input type="text" id="tags-input" placeholder="Тэги" readonly />
             ${selectedTags.map(tag => `<span class="tag">${tag.name} <span class="remove-tag" data-tag-id="${tag.id}">×</span></span>`).join('')}
               <span class="tags-arrow">&#9660;</span>
             </div>
@@ -32,32 +33,32 @@ export class FilterComponent extends BaseComponent {
             </div>
           </div>
         </div>
-        <div class="filter-group">
-          <label for="author">Author</label>
+        ${this.isCommunity ? '' : `<div class="filter-group">
+          <label for="author">Автор</label>
           <input type="text" id="author" placeholder="Author" value="${urlParams.get('author') || ''}" />
-        </div>
+        </div>`}
+        ${this.isCommunity ? '' : `<div class="filter-group">
+          <label for="min">Время чтения от</label>
+          <input type="number" id="min" placeholder="Время чтения от" min="0" value="${urlParams.get('min') || ''}" />
+        </div>`}
+        ${this.isCommunity ? '' : `<div class="filter-group">
+          <label for="max">Время чтения до</label>
+          <input type="number" id="max" placeholder="Время чтения до" min="0" value="${urlParams.get('max') || ''}" />
+        </div>`}
         <div class="filter-group">
-          <label for="min">Min Reading Time</label>
-          <input type="number" id="min" placeholder="Min Reading Time" min="0" value="${urlParams.get('min') || ''}" />
-        </div>
-        <div class="filter-group">
-          <label for="max">Max Reading Time</label>
-          <input type="number" id="max" placeholder="Max Reading Time" min="0" value="${urlParams.get('max') || ''}" />
-        </div>
-        <div class="filter-group">
-          <label for="sorting">Sorting</label>
+          <label for="sorting">Сортировать</label>
           <select id="sorting">
-            <option value="CreateDesc" ${urlParams.get('sorting') === 'CreateDesc' ? 'selected' : ''}>Create Desc</option>
-            <option value="CreateAsc" ${urlParams.get('sorting') === 'CreateAsc' ? 'selected' : ''}>Create Asc</option>
-            <option value="LikeAsc" ${urlParams.get('sorting') === 'LikeAsc' ? 'selected' : ''}>Like Asc</option>
-            <option value="LikeDesc" ${urlParams.get('sorting') === 'LikeDesc' ? 'selected' : ''}>Like Desc</option>
+            <option value="CreateDesc" ${urlParams.get('sorting') === 'CreateDesc' ? 'selected' : ''}>По дате создания(сначала новые)</option>
+            <option value="CreateAsc" ${urlParams.get('sorting') === 'CreateAsc' ? 'selected' : ''}>По дате создания(сначала старые)</option>
+            <option value="LikeAsc" ${urlParams.get('sorting') === 'LikeAsc' ? 'selected' : ''}>По лайкам(от меньшего)</option>
+            <option value="LikeDesc" ${urlParams.get('sorting') === 'LikeDesc' ? 'selected' : ''}>По лайкам(от большего)</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label for="onlyMyCommunities">Only My Communities</label>
+        ${this.isCommunity ? '' : `<div class="filter-group">
+          <label for="onlyMyCommunities">Только мои группы</label>
           <input type="checkbox" id="onlyMyCommunities" ${urlParams.get('onlyMyCommunities') === 'true' ? 'checked' : ''} />
-        </div>
-        <button type="submit" class="filter-button">Filter</button>
+        </div>`}
+        <button type="submit" class="filter-button">Применить</button>
       </form>
     `;
   }
@@ -118,21 +119,24 @@ export class FilterComponent extends BaseComponent {
       urlParams.delete('tags');
     }
   
-    const author = document.getElementById('author').value;
+    let author;
+    if(!this.isCommunity) author = document.getElementById('author').value;
     if (author) {
       urlParams.set('author', author);
     } else {
       urlParams.delete('author');
     }
   
-    const min = document.getElementById('min').value;
+    let min;
+    if(!this.isCommunity) min = document.getElementById('min').value;
     if (min) {
       urlParams.set('min', min);
     } else {
       urlParams.delete('min');
     }
   
-    const max = document.getElementById('max').value;
+    let max;
+    if(!this.isCommunity) max = document.getElementById('max').value;
     if (max) {
       urlParams.set('max', max);
     } else {
@@ -146,7 +150,8 @@ export class FilterComponent extends BaseComponent {
       urlParams.delete('sorting');
     }
   
-    const onlyMyCommunities = document.getElementById('onlyMyCommunities').checked;
+    let onlyMyCommunities;
+    if(!this.isCommunity) onlyMyCommunities = document.getElementById('onlyMyCommunities').checked
     if (onlyMyCommunities) {
       urlParams.set('onlyMyCommunities', 'true');
     } else {

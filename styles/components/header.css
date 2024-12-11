@@ -14,16 +14,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
 }
 
 .center-links {
   display: flex;
   gap: 1rem;
-}
-
-.right-corner {
-  margin-left: auto;
 }
 
 .nav-link {

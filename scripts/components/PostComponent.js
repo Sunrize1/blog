@@ -38,7 +38,7 @@ export class PostComponent extends BaseComponent {
       <div class="post-content">
         ${this.post.image ? `<img src="${this.post.image}" alt="${this.post.title}" class="post-image" />` : ''}
         <p class="post-description">${escapeHtml(this.post.description).substring(0, 300)}</p>
-        ${this.post.description.length > 300 ? `<p class="read-more-button">Read More</p>` : ''}
+        ${this.post.description.length > 300 ? `<p class="read-more-button">Читать полностью</p>` : ''}
         <div class="post-details">
 
           <div class="post-likes">
@@ -54,7 +54,7 @@ export class PostComponent extends BaseComponent {
               <p>${this.post.commentsCount}</p>
           </div>
 
-          <p>Reading Time: ${this.post.readingTime} minutes</p>
+          <p>Время чтения: ${this.post.readingTime} мин</p>
           
           <div class="post-tags">
             ${this.post.tags.map(tag => `<span class="tag">${tag.name}</span>`).join('')}
@@ -74,10 +74,10 @@ export class PostComponent extends BaseComponent {
         const descriptionElement = readMoreButton.previousElementSibling;
         if (descriptionElement.classList.contains('expanded')) {
           descriptionElement.textContent = this.post.description.substring(0, 300) + '...';
-          readMoreButton.textContent = 'Read More';
+          readMoreButton.textContent = 'Читать полностью';
         } else {
           descriptionElement.textContent = this.post.description;
-          readMoreButton.textContent = 'Read Less';
+          readMoreButton.textContent = 'Скрыть';
         }
         descriptionElement.classList.toggle('expanded');
       });

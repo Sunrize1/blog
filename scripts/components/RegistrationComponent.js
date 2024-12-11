@@ -14,9 +14,9 @@ export class RegistrationComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="registration-container">
         <form id="registration-form">
-        <h2>Registartion<h2>
-          <input type="text" id="fullName" placeholder="Full Name" required />
-          <input type="password" id="password" placeholder="Password" required />
+        <h2>Регистрация<h2>
+          <input type="text" id="fullName" placeholder="ФИО" required />
+          <input type="password" id="password" placeholder="Пароль" required />
           <input type="email" id="email" placeholder="Email" required />
           <input type="date" id="birthDate" required />
           <select id="gender" required>
@@ -24,8 +24,8 @@ export class RegistrationComponent extends BaseComponent {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-          <input type="text" id="phoneNumber" placeholder="Phone Number" required />
-          <button type="submit">Register</button>
+          <input type="text" id="phoneNumber" placeholder="Номер телефона" required />
+          <button type="submit">Зарегистрироваться</button>
         </form>
       </div>
     `;

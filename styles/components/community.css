@@ -1,0 +1,60 @@
+.community-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+.community-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--upper-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px var(--shadow-color), 0 6px 6px var(--shadow-color);
+}
+
+.community-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.community-subscribers {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.subscribers-icon {
+  width: 18px;
+  height: 18px;
+}
+
+
+.administrators-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.administrators-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.administrator-card {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 1rem;
+  border-left: 2px solid var(--primary-color);
+}
+
+.administrator-icon {
+  width: 50px; 
+  height: 50px; 
+  border-radius: 50%;
+}
+
+

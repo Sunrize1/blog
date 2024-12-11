@@ -21,7 +21,7 @@ export class MainComponent extends BaseComponent {
     this.element.className = 'main-container';
     this.element.innerHTML = ``;
     this.element.innerHTML = `
-      ${stateManager.getToken() ? `<button id="create-post-button" class="create-post-button">Create Post</button>` : ''}
+      ${stateManager.getToken() ? `<button class="create-post-button">Создать пост</button>` : ''}
       <div id="filter"></div>
       <div id="posts"></div>
       <div id="pagination"></div>
@@ -61,14 +61,14 @@ export class MainComponent extends BaseComponent {
   }
 
   setupFilter() {
-    const filterContainer = document.getElementById('filter')
+    const filterContainer = this.element.querySelector('#filter');
     filterContainer.innerHTML = '';
-    const filterComponent = new FilterComponent(this.tags, this.fetchAndDisplayPosts.bind(this));
+    const filterComponent = new FilterComponent(this.tags, this.fetchAndDisplayPosts.bind(this), false);
     filterComponent.mount(filterContainer);
   }
 
   setupPosts() {
-    const postsContainer = document.getElementById('posts');
+    const postsContainer = this.element.querySelector('#posts');
     postsContainer.innerHTML = '';
     this.posts.forEach(post => {
       const postComponent = new PostComponent(post);
@@ -77,21 +77,20 @@ export class MainComponent extends BaseComponent {
   }
 
   setupPagination() {
-    const paginationContainer = document.getElementById('pagination')
+    const paginationContainer = this.element.querySelector('#pagination');
     paginationContainer.innerHTML = '';
     const paginationComponent = new PaginationComponent(this.pagination, this.handlePageChange);
     paginationComponent.mount(paginationContainer);
   }
 
-  async handlePageChange(newPage) {
+  handlePageChange(newPage) {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('page', newPage);
     router.navigate(`/main?${urlParams.toString()}`);
-    await this.fetchAndDisplayPosts();
   }
 
   setupCreatePostButton() {
-    const createPostButton = this.element.querySelector('#create-post-button');
+    const createPostButton = this.element.querySelector('.create-post-button');
     createPostButton.addEventListener('click', () => {
       const createPostComponent = new CreatePostComponent();
       createPostComponent.mount(document.body);

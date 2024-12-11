@@ -11,8 +11,8 @@ export class FooterComponent extends BaseComponent {
   render() {
     this.element.innerHTML = `
       <footer>
-      <button id="theme-toggle" class="theme-toggle">Toggle Theme</button>
-        <p>&copy; 2023 My Web App</p>
+      <button id="theme-toggle" class="theme-toggle">Переключить тему</button>
+        <p>&copy; 2024 Блог №415</p>
       </footer>
     `;
   }

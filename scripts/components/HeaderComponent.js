@@ -19,23 +19,25 @@ export class HeaderComponent extends BaseComponent {
     this.element.innerHTML = `
     <header class="header">
       <nav class="nav">
+      <h3>Блог №415</h2>
         <div class="center-links">
-          <a href="#" data-route="/main" class="nav-link">Main</a>
-          <a href="#" data-route="/authors" class="nav-link">Authors</a>
+          <a href="#" data-route="/main" class="nav-link">Главная</a>
+          <a href="#" data-route="/authors" class="nav-link">Авторы</a>
+          <a href="#" data-route="/communities" class="nav-link">Группы</a>
         </div>
-        <div class="right-corner">
+      </nav>
+      <div class="right-corner">
           ${stateManager.state.token ? `
             <div class="dropdown">
               <span class="user-email">${stateManager.state.email}</span>
               <div class="dropdown-content">
-                <a href="#" data-route="/profile" class="nav-link">Profile</a>
-                <a href="#" data-route="/logout" id="logout" class="nav-link">Logout</a>
+                <a href="#" data-route="/profile" class="nav-link">Профиль</a>
+                <a href="#" data-route="/logout" id="logout" class="nav-link">Выйти</a>
               </div>
             </div>
-          ` : '<a href="#" data-route="/login" class="nav-link">Login</a>'}
-          ${!stateManager.state.token ? `<a href="#" data-route="/register" class="nav-link">Register</a>` : ''}
+          ` : '<a href="#" data-route="/login" class="nav-link">Войти</a>'}
+          ${!stateManager.state.token ? `<a href="#" data-route="/register" class="nav-link">Зарегистрироваться</a>` : ''}
         </div>
-      </nav>
     </header>
     `;
   }

@@ -75,18 +75,14 @@ export async function loginUser(data) {
 }
 
 export async function logoutUser() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found.');
-  }
   const response = await fetch('https://blog.kreosoft.space/api/account/logout', {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
   });
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   const responseData = await response.json();
@@ -97,17 +93,14 @@ export async function logoutUser() {
 }
 
 export async function fetchProfile() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found.');
-  }
+
   const response = await fetch('https://blog.kreosoft.space/api/account/profile', {
-    headers: { 'Authorization': `Bearer ${token}` },
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
   });
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized")
+    throw new Error("Неавторизован")
   }
 
   const responseData = await response.json();
@@ -138,7 +131,7 @@ export async function fetchPosts(filters) {
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   const responseData = await response.json();
@@ -149,19 +142,14 @@ export async function fetchPosts(filters) {
 }
 
 export async function likePost(postId) {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found.');
-  }
-
   const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
   });
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   if (!response.ok) {
@@ -170,19 +158,15 @@ export async function likePost(postId) {
 }
 
 export async function unlikePost(postId) {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found.');
-  }
-
+  
   const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
     method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` },
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
   });
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   if (!response.ok) {
@@ -212,7 +196,7 @@ export async function addPost(data) {
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   const responseData = await response.json();
@@ -237,7 +221,7 @@ export async function addComment(postId, commentData) {
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   if (!response.ok) {
@@ -262,7 +246,7 @@ export async function deleteComment(commentId) {
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   if (!response.ok) {
@@ -282,10 +266,122 @@ export async function updateComment(commentId, commentData) {
 
   if (response.status === 401) {
     stateManager.unsetState();
-    throw new Error("Unauthorized");
+    throw new Error("Неавторизован");
   }
 
   if (!response.ok) {
     throw new Error(response.title);
   }
 }
+
+//Communities endpoints
+export async function fetchCommunities() {
+  const response = await fetch('https://blog.kreosoft.space/api/community');
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
+export async function fetchMyCommunities() {
+  const response = await fetch('https://blog.kreosoft.space/api/community/my', {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
+export async function subscribeToCommunity(communityId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/subscribe`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+}
+
+export async function unsubscribeFromCommunity(communityId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/unsubscribe`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+}
+
+export async function fetchCommunityById(communityId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}`);
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+
+export async function fetchCommunityPosts(communityId, filters) {
+  const queryParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        queryParams.append(`${key}[${index}]`, item);
+      });
+    } else {
+      queryParams.append(key, value);
+    }
+  }
+
+  const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/post?${queryParams.toString()}`, {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  const responseData = await response.json();
+  if (!response.ok) {
+    throw new Error(responseData.title);
+  }
+  return responseData;
+}
+
+export async function fetchCommunityRole(communityId) {
+  const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/role`, {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+  }
+  );
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  if (!response.ok) {
+    throw new Error(response.message);
+  }
+  return await response.json();
+}
+

@@ -142,3 +142,36 @@
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
+
+  .community-select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  
+  .community-select-group select {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .community-select-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  
+  .community-select-group select option {
+    background-color: var(--upper-color);
+    color: var(--text-color);
+  }
+  
+  .community-select-group select option:checked {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+  }

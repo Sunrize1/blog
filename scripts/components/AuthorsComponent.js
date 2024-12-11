@@ -25,6 +25,7 @@ export class AuthorsComponent extends BaseComponent {
       }
       return b.posts - a.posts;
     });
+    
     this.element.className = 'authors-container'
     this.element.innerHTML = `
       <div class="authors-list">
@@ -47,8 +48,8 @@ export class AuthorsComponent extends BaseComponent {
         </div>
         <div class="author-name">${author.fullName}</div>
         <div class="author-stats">
-          <span class="stat-tag">Posts: ${author.posts}</span>
-          <span class="stat-tag">Likes: ${author.likes}</span>
+          <span class="stat-tag">Посты: ${author.posts}</span>
+          <span class="stat-tag">Лайки: ${author.likes}</span>
         </div>
       </div>
     `;

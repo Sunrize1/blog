@@ -28,7 +28,7 @@ export class SubCommentComponent extends BaseComponent {
         ${this.comment.modifiedDate && !this.isDeleted ? `<p title="${formatDate(this.comment.modifiedDate)}" >(Изменено)</p>`: ''}
         </div>
         <div class="comment-actions">
-          <button class="answer-button">Reply</button>
+          <button class="answer-button">Ответить</button>
           ${(this.comment.authorId === stateManager.state.userId && !this.isDeleted) ? `
             <img src="./assets/${this.theme}/icons/delete.png" class="delete-icon" alt="Delete">
             <img src="./assets/${this.theme}/icons/edit.png" class="edit-icon" alt="Edit">
@@ -39,14 +39,14 @@ export class SubCommentComponent extends BaseComponent {
       </div>
       ${this.isDeleted ? `<p class="comment-content">[Комментарий удален]</p>` : `<p class="comment-content">${this.comment.content}</p>`}
       <div class="answer-input-container" style="display: none;">
-        <input type="text" class="answer-input" placeholder="Write your answer...">
-        <button class="submit-answer-button">Answer</button>
-        <button class="close-answer-button">Close</button>
+        <input type="text" class="answer-input" placeholder="Напишите ответ...">
+        <button class="submit-answer-button">Ответить</button>
+        <button class="close-answer-button">Закрыть</button>
       </div>
       <div class="edit-input-container" style="display: none;">
         <input type="text" class="edit-input" value="${this.comment.content}">
-        <button class="submit-edit-button">Edit</button>
-        <button class="close-edit-button">Close</button>
+        <button class="submit-edit-button">Редактировать</button>
+        <button class="close-edit-button">Закрыть</button>
       </div>
       <div class="sub-comments"></div>
     `;
@@ -91,7 +91,6 @@ export class SubCommentComponent extends BaseComponent {
     if (content) {
       try {
         await updateComment(this.comment.id, { content });
-        new PopupComponent({ message: 'Comment updated successfully' }).mount(document.body);
         this.comment.content = content;
         this.comment.modifiedDate = new Date()
         this.render();
@@ -133,7 +132,6 @@ export class SubCommentComponent extends BaseComponent {
       try {
         await addComment(this.postId, { content, parentId: this.comment.id });
         this.baseCommentRefreshAfterAddSubComment();
-        new PopupComponent({ message: 'Answer added successfully' }).mount(document.body);
       } catch (error) {
         new PopupComponent({ message: error.message }).mount(document.body);
       }
@@ -166,7 +164,6 @@ export class SubCommentComponent extends BaseComponent {
     try {
       await deleteComment(this.comment.id);
       this.baseCommentRefreshAfterDeleteSubComment();
-      new PopupComponent({ message: 'Comment deleted successfully' }).mount(document.body);
       return true;
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);

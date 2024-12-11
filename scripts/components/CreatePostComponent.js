@@ -1,21 +1,32 @@
 import { BaseComponent } from './BaseComponent.js';
-import { addPost, fetchAddressSearch, fetchAddressChain } from '../utils/API.js';
+import { addPost, fetchAddressSearch, fetchAddressChain, fetchMyCommunities, fetchCommunities } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { fetchTags } from '../utils/API.js';
 import { router } from '../main.js';
 
 export class CreatePostComponent extends BaseComponent {
-  constructor() {
+  constructor(ChoosenCommunityId) {
     super();
     this.tags = [];
     this.address = null;
     this.currentObjectId = null;
-    this.fetchAndDisplayTags();
+    this.ChoosenCommunityId = ChoosenCommunityId;
+    this.communities = [];
+    this.fetchAndDisplayCreatePost();
   }
 
-  async fetchAndDisplayTags() {
-    this.tags = await fetchTags();
-    this.render();
+  async fetchAndDisplayCreatePost() {
+    try {
+      this.tags = await fetchTags();
+      const myCommunities = await fetchMyCommunities();
+      const adminCommunityIds = myCommunities.filter(c => c.role === 'Administrator').map(c => c.communityId);
+
+      const allCommunities = await fetchCommunities();
+      this.communities = allCommunities.filter(c => adminCommunityIds.includes(c.id));
+      this.render();
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+    }
   }
 
   render() {
@@ -23,27 +34,37 @@ export class CreatePostComponent extends BaseComponent {
     this.element.innerHTML = `
       <div class="create-post-container">
         <form class="create-post-form">
-          <h2>Create Post</h2>
-          <input type="text" id="title" placeholder="Title" required />
-          <textarea id="description" placeholder="Description" required></textarea>
-          <input type="text" id="image" placeholder="Image URL" />
-          <input type="number" id="readingTime" placeholder="Reading Time (minutes)" required />
+          <h2>Написать новый пост</h2>
+          <input type="text" id="title" placeholder="Название" required />
+          <textarea id="description" placeholder="Текст" required></textarea>
+          <input type="text" id="image" placeholder="Ссылка на картинку" />
+          <input type="number" id="readingTime" placeholder="Время чтения(в минутах)" required />
           <div class="tags-container">
             <div class="tags-input">
-              <input type="text" id="tags-input" placeholder="Select tags" readonly />
+              <input type="text" id="tags-input" placeholder="Тэги" readonly />
               <span class="tags-arrow">&#9660;</span>
             </div>
             <div class="tags-dropdown">
               ${this.tags.map(tag => `<div class="tag-option" data-tag-id="${tag.id}">${tag.name}</div>`).join('')}
             </div>
           </div>
+          <div class="community-select-group">
+            <label for="community">Группа</label>
+            <select id="community">
+              <option value="">Не выбрано</option>
+              ${this.communities.map(community => 
+                `<option value="${community.id}" ${community.id == this.ChoosenCommunityId ? 'selected': ''}>
+                    ${community.name}
+                </option>`).join('')}
+            </select>
+          </div>
           <div class="address-input-group">
             <label for="region">Субъект РФ</label>
             <input type="text" id="region-select" list="region-datalist" class="address-select"></input>
             <datalist id="region-datalist"></datalist>
           </div>
-          <button type="submit">Create Post</button>
-          <button type="button" class="close-button">Close</button>
+          <button type="submit">Создать пост</button>
+          <button type="button" class="close-button">Закрыть</button>
         </form>
       </div>
     `;
@@ -65,6 +86,7 @@ export class CreatePostComponent extends BaseComponent {
         image: this.element.querySelector('#image').value,
         addressId: this.address,
         tags: Array.from(this.element.querySelectorAll('.tag')).map(tag => tag.querySelector('.remove-tag').getAttribute('data-tag-id')),
+        communityId: this.element.querySelector('#community').value || null 
       };
       
       await this.createPost(data);
@@ -240,7 +262,7 @@ export class CreatePostComponent extends BaseComponent {
   async createPost(data) {
     try {
       await addPost(data);
-      new PopupComponent({ message: 'Post created successfully' }).mount(document.body);
+      new PopupComponent({ message: 'Пост создан успешно!' }).mount(document.body);
       this.unmount();
       router.navigate('/main');
     } catch (error) {
