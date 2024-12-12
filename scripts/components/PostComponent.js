@@ -4,11 +4,12 @@ import { likePost, unlikePost } from '../utils/API.js';
 import { router } from '../main.js';
 import { PopupComponent } from './PopupComponent.js';
 import { fetchAddressChain } from '../utils/API.js';
+import { stateManager } from '../utils/StateManager.js';
 
 export class PostComponent extends BaseComponent {
   constructor(post) {
     super();
-    this.theme = localStorage.getItem('theme');
+    this.theme = stateManager.getTheme();
     this.post = post;
     this.addressChain = [];
     this.fetchAndDisplayPost();

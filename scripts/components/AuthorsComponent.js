@@ -2,12 +2,13 @@ import { BaseComponent } from './BaseComponent.js';
 import { fetchAuthors } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { router } from '../main.js';
+import { stateManager } from '../utils/StateManager.js';
 import { formatDate } from '../utils/Utils.js';
 
 export class AuthorsComponent extends BaseComponent {
   constructor() {
     super();
-    this.theme = localStorage.getItem('theme');
+    this.theme = stateManager.getTheme();
     this.fetchAndDisplayAuthors();
   }
 

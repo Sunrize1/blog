@@ -9,7 +9,7 @@ export class CommentComponent extends BaseComponent {
   constructor(comment, postId) {
     super();
     this.postId = postId;
-    this.theme = localStorage.getItem('theme');
+    this.theme = stateManager.getTheme();
     this.comment = comment;
     this.isDeleted = this.comment.content ? false : true;
     this.render();

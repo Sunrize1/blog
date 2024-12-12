@@ -3,6 +3,7 @@ class StateManager {
     this.state = {
       token: localStorage.getItem('token'),
       email: localStorage.getItem('email'),
+      theme: localStorage.getItem('theme'),
       userId: localStorage.getItem('userId'),
     };
     this.stateChangeListeners = [];
@@ -10,6 +11,9 @@ class StateManager {
 
   getToken() {
     return this.state.token;
+  }
+  getTheme() {
+    return this.state.theme;
   }
 
   getUserEmail() {
@@ -35,6 +39,11 @@ class StateManager {
   setUserId(userId) {
     this.state.userId = userId;
     localStorage.setItem('userId', userId);
+    this.notifyStateChange();
+  }
+  setTheme(theme) {
+    this.state.theme = theme;
+    localStorage.setItem('theme', theme);
     this.notifyStateChange();
   }
 

@@ -60,6 +60,7 @@ export class ProfileComponent extends BaseComponent {
     try {
       await updateUser(data);
       this.fetchAndDisplayProfile()
+      new PopupComponent( {message: "Профиль успешно обновлен"}).mount(document.body);
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
       this.fetchAndDisplayProfile()

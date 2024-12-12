@@ -8,7 +8,7 @@ export class SubCommentComponent extends BaseComponent {
   constructor(comment, postId, baseCommentRefreshAfterDeleteSubComment, baseCommentRefreshAfterAddSubComment) {
     super();
     this.postId = postId;
-    this.theme = localStorage.getItem('theme');
+    this.theme = stateManager.getTheme();
     this.comment = comment;
     this.baseCommentRefreshAfterDeleteSubComment = baseCommentRefreshAfterDeleteSubComment;
     this.baseCommentRefreshAfterAddSubComment = baseCommentRefreshAfterAddSubComment;

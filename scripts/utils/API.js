@@ -79,7 +79,7 @@ export async function loginUser(data) {
 export async function updateUser(data) {
   const response = await fetch('https://blog.kreosoft.space/api/account/profile', {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${stateManager.getToken()}` },
     body: JSON.stringify(data),
   });
 
@@ -101,7 +101,7 @@ export async function updateUser(data) {
 export async function logoutUser() {
   const response = await fetch('https://blog.kreosoft.space/api/account/logout', {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -119,7 +119,7 @@ export async function logoutUser() {
 export async function fetchProfile() {
 
   const response = await fetch('https://blog.kreosoft.space/api/account/profile', {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -150,7 +150,7 @@ export async function fetchPosts(filters) {
   }
 
   const response = await fetch(`https://blog.kreosoft.space/api/post?${queryParams.toString()}`, {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -160,7 +160,9 @@ export async function fetchPosts(filters) {
 
   const responseData = await response.json();
   if (!response.ok) {
-    throw new Error(responseData.title);
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError);
   }
   return responseData;
 }
@@ -168,7 +170,7 @@ export async function fetchPosts(filters) {
 export async function likePost(postId) {
   const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -185,7 +187,7 @@ export async function unlikePost(postId) {
   
   const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}/like`, {
     method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -200,7 +202,7 @@ export async function unlikePost(postId) {
 
 export async function fetchPostById(postId) {
   const response = await fetch(`https://blog.kreosoft.space/api/post/${postId}`, {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
   if (!response.ok) {
     throw new Error(response.title);
@@ -213,7 +215,7 @@ export async function addPost(data) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${stateManager.getToken()}`
     },
     body: JSON.stringify(data)
   });
@@ -223,12 +225,14 @@ export async function addPost(data) {
     throw new Error("Неавторизован");
   }
 
-  const responseData = await response.json();
+  
   if (!response.ok) {
-    throw new Error(responseData.message);
+    const responseData = await response.json();
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError);
   }
-
-  return responseData;
+  return response ;
 }
 
 
@@ -238,7 +242,7 @@ export async function addComment(postId, commentData) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${stateManager.getToken()}`
     },
     body: JSON.stringify(commentData)
   });
@@ -248,10 +252,14 @@ export async function addComment(postId, commentData) {
     throw new Error("Неавторизован");
   }
 
+  
   if (!response.ok) {
-    throw new Error(response.title);
+    const responseData = await response.json();
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError);
   }
-  return response;
+  return response ;
 }
 
 export async function fetchCommentTree(commentId) {
@@ -265,7 +273,7 @@ export async function fetchCommentTree(commentId) {
 export async function deleteComment(commentId) {
   const response = await fetch(`https://blog.kreosoft.space/api/comment/${commentId}`, {
     method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -283,7 +291,7 @@ export async function updateComment(commentId, commentData) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${stateManager.getToken()}`
     },
     body: JSON.stringify(commentData)
   });
@@ -309,7 +317,7 @@ export async function fetchCommunities() {
 
 export async function fetchMyCommunities() {
   const response = await fetch('https://blog.kreosoft.space/api/community/my', {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -326,7 +334,7 @@ export async function fetchMyCommunities() {
 export async function subscribeToCommunity(communityId) {
   const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/subscribe`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -342,7 +350,7 @@ export async function subscribeToCommunity(communityId) {
 export async function unsubscribeFromCommunity(communityId) {
   const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/unsubscribe`, {
     method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -377,7 +385,7 @@ export async function fetchCommunityPosts(communityId, filters) {
   }
 
   const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/post?${queryParams.toString()}`, {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   });
 
   if (response.status === 401) {
@@ -387,14 +395,16 @@ export async function fetchCommunityPosts(communityId, filters) {
 
   const responseData = await response.json();
   if (!response.ok) {
-    throw new Error(responseData.title);
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError);
   }
   return responseData;
 }
 
 export async function fetchCommunityRole(communityId) {
   const response = await fetch(`https://blog.kreosoft.space/api/community/${communityId}/role`, {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    headers: { 'Authorization': `Bearer ${stateManager.getToken()}` },
   }
   );
 

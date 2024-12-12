@@ -48,6 +48,7 @@ export class MainComponent extends BaseComponent {
       this.setupPagination();
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
+      router.navigate('/main');
     }
   }
 

@@ -12,7 +12,7 @@ export class CommunityPage extends BaseComponent {
   constructor(params) {
     super();
     this.token = stateManager.getToken();
-    this.theme = localStorage.getItem('theme');
+    this.theme = stateManager.getTheme();
     this.communityId = params.id;
     this.community = null;
     this.role = null;
@@ -49,6 +49,7 @@ export class CommunityPage extends BaseComponent {
       this.setupPagination();
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
+      router.navigate(`/community/${this.communityId}`)
     }
   }
 

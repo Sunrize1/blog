@@ -1,5 +1,5 @@
 import { BaseComponent } from './BaseComponent.js';
-import { addPost, fetchAddressSearch, fetchAddressChain, fetchMyCommunities, fetchCommunities } from '../utils/API.js';
+import { addPost, fetchAddressSearch, fetchMyCommunities, fetchCommunities } from '../utils/API.js';
 import { PopupComponent } from './PopupComponent.js';
 import { fetchTags } from '../utils/API.js';
 import { router } from '../main.js';
@@ -13,6 +13,8 @@ export class CreatePostComponent extends BaseComponent {
     this.ChoosenCommunityId = ChoosenCommunityId;
     this.communities = [];
     this.fetchAndDisplayCreatePost();
+
+    document.body.classList.add('no-scroll');
   }
 
   async fetchAndDisplayCreatePost() {
@@ -40,7 +42,7 @@ export class CreatePostComponent extends BaseComponent {
           <input type="text" id="image" placeholder="Ссылка на картинку" />
           <input type="number" id="readingTime" placeholder="Время чтения(в минутах)" required />
           <div class="tags-container">
-            <div class="tags-input">
+            <div class="taags-input">
               <input type="text" id="tags-input" placeholder="Тэги" readonly />
               <span class="tags-arrow">&#9660;</span>
             </div>
@@ -83,10 +85,10 @@ export class CreatePostComponent extends BaseComponent {
         title: this.element.querySelector('#title').value,
         description: this.element.querySelector('#description').value,
         readingTime: this.element.querySelector('#readingTime').value,
-        image: this.element.querySelector('#image').value,
+        image: this.element.querySelector('#image').value || null,
         addressId: this.address,
         tags: Array.from(this.element.querySelectorAll('.tag')).map(tag => tag.querySelector('.remove-tag').getAttribute('data-tag-id')),
-        communityId: this.element.querySelector('#community').value || null 
+        communityId: this.element.querySelector('#community').value || null
       };
       
       await this.createPost(data);
@@ -98,7 +100,7 @@ export class CreatePostComponent extends BaseComponent {
   }
 
   setupInputTags() {
-    const tagsInput = this.element.querySelector('.tags-input');
+    const tagsInput = this.element.querySelector('.taags-input');
     const tagsDropdown = this.element.querySelector('.tags-dropdown');
     const tagsInputField = this.element.querySelector('#tags-input');
     const tagsArrow = this.element.querySelector('.tags-arrow');
@@ -122,7 +124,7 @@ export class CreatePostComponent extends BaseComponent {
   }
 
   setupTags() {
-    const tagsInput = this.element.querySelector('.tags-input');
+    const tagsInput = this.element.querySelector('.taags-input');
     const removeTags = tagsInput.querySelectorAll('.remove-tag');
     removeTags.forEach(removeTag => {
       removeTag.addEventListener('click', (e) => {
@@ -268,5 +270,10 @@ export class CreatePostComponent extends BaseComponent {
     } catch (error) {
       new PopupComponent({ message: error.message }).mount(document.body);
     }
+  }
+
+  unmount() {
+    super.unmount();
+    document.body.classList.remove('no-scroll');
   }
 }
