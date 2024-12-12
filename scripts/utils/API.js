@@ -55,7 +55,9 @@ export async function registerUser(data) {
   });
   const responseData = await response.json();
   if (!response.ok) {
-    throw new Error(responseData.message);
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError); 
   }
   return responseData;
 }
@@ -72,6 +74,28 @@ export async function loginUser(data) {
   }
   stateManager.setToken(responseData.token);
   return responseData;
+}
+
+export async function updateUser(data) {
+  const response = await fetch('https://blog.kreosoft.space/api/account/profile', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+    body: JSON.stringify(data),
+  });
+
+  if (response.status === 401) {
+    stateManager.unsetState();
+    throw new Error("Неавторизован");
+  }
+
+  
+  if (!response.ok) {
+    const responseData = await response.json();
+    const firstKey = Object.keys(responseData.errors)[0]; 
+    const firstError = responseData.errors[firstKey][0]; 
+    throw new Error(firstError);
+  }
+  
 }
 
 export async function logoutUser() {

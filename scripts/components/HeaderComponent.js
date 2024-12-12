@@ -1,5 +1,4 @@
 import { BaseComponent } from './BaseComponent.js';
-import { toggleTheme } from '../utils/Utils.js';
 import { logoutUser } from '../utils/API.js';
 import { router } from '../main.js';
 import { stateManager } from '../utils/StateManager.js';
@@ -38,7 +37,6 @@ export class HeaderComponent extends BaseComponent {
               </div>
             </div>
           ` : '<a href="#" data-route="/login" class="nav-link">Войти</a>'}
-          ${!stateManager.getToken() ? `<a href="#" data-route="/register" class="nav-link">Зарегистрироваться</a>` : ''}
         </div>
     </header>
     `;

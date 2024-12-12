@@ -8,38 +8,51 @@ export class LoginComponent extends BaseComponent {
   constructor() {
     super();
     this.render();
-    this.setupForm();
   }
 
   render() {
+    this.element.className = 'login-container';
+    this.element.innerHTML = ``;
     this.element.innerHTML = `
-      <div class="login-container">
-        <form class="login-form">
+      <form class="login-form">
           <h2>Вход</h2>
           <input type="email" id="email" placeholder="Email" required />
           <input type="password" id="password" placeholder="Пароль" required />
           <button type="submit">Войти</button>
+          <button class="registration-button">Зарегестрироваться</button>
         </form>
-      </div>
     `;
+    this.setupForm();
+    this.setupRegistrationButton();
   }
 
   setupForm() {
     const form = this.element.querySelector('.login-form');
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const data = {
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
+        email: this.element.querySelector('#email').value,
+        password: this.element.querySelector('#password').value,
       };
-      try {
-        const responseData = await loginUser(data);
-        stateManager.setToken(responseData.token);
-        stateManager.setEmail(data.email);
-        router.navigate('/profile');
-      } catch (error) {
-        new PopupComponent({ message: error.message }).mount(document.body);
-      }
+      this.login(data);
     });
+  }
+
+  setupRegistrationButton() {
+    const button = this.element.querySelector('.registration-button');
+    button.addEventListener('click', () => {
+      router.navigate('/register')
+    })
+  }
+
+  async login(data) {
+    try {
+      const responseData = await loginUser(data);
+      stateManager.setToken(responseData.token);
+      stateManager.setEmail(data.email);
+      router.navigate('/profile');
+    } catch (error) {
+      new PopupComponent({ message: error.message }).mount(document.body);
+    }
   }
 }
