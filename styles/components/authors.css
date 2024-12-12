@@ -60,6 +60,12 @@
   font-weight: bold;
   color: var(--text-color);
 }
+.author-details {
+  font-size: small;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 .author-stats {
   display: flex;
