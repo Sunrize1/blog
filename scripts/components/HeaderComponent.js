@@ -1,5 +1,3 @@
-// front/scripts/components/HeaderComponent.js
-
 import { BaseComponent } from './BaseComponent.js';
 import { toggleTheme } from '../utils/Utils.js';
 import { logoutUser } from '../utils/API.js';
@@ -9,37 +7,42 @@ import { stateManager } from '../utils/StateManager.js';
 export class HeaderComponent extends BaseComponent {
   constructor() {
     super();
+    this.route = null;
     this.render();
-    this.setupNavigation();
-    this.updateHeader();
-    stateManager.addStateChangeListener(this.handleStateChange.bind(this));
+    stateManager.addStateChangeListener(this.render.bind(this));
+    router.addUrlChangeListener(this.render.bind(this));
   }
 
   render() {
+    this.route = window.location.pathname.split('/');
+    this.element.innerHTML = ``;
     this.element.innerHTML = `
     <header class="header">
       <nav class="nav">
       <h3>Блог №415</h2>
         <div class="center-links">
           <a href="#" data-route="/main" class="nav-link">Главная</a>
-          <a href="#" data-route="/authors" class="nav-link">Авторы</a>
-          <a href="#" data-route="/communities" class="nav-link">Группы</a>
+          ${this.route[1] === 'main' || this.route[1] === 'community' || this.route[1] === 'communities' || this.route[1] === 'post'  ? `<a href="#" data-route="/authors" class="nav-link">Авторы</a>
+          <a href="#" data-route="/communities" class="nav-link">Группы</a>`: ''}
+          ${this.route[1] === 'authors' ? `<a href="#" data-route="/authors" class="nav-link">Авторы</a>`: ''}
         </div>
       </nav>
       <div class="right-corner">
-          ${stateManager.state.token ? `
+          ${stateManager.getToken() ? `
             <div class="dropdown">
-              <span class="user-email">${stateManager.state.email}</span>
+              <span class="user-email">${stateManager.getUserEmail()}</span>
+              <span class="arrow">&#9660;</span>
               <div class="dropdown-content">
                 <a href="#" data-route="/profile" class="nav-link">Профиль</a>
                 <a href="#" data-route="/logout" id="logout" class="nav-link">Выйти</a>
               </div>
             </div>
           ` : '<a href="#" data-route="/login" class="nav-link">Войти</a>'}
-          ${!stateManager.state.token ? `<a href="#" data-route="/register" class="nav-link">Зарегистрироваться</a>` : ''}
+          ${!stateManager.getToken() ? `<a href="#" data-route="/register" class="nav-link">Зарегистрироваться</a>` : ''}
         </div>
     </header>
     `;
+    this.setupNavigation();
   }
 
   setupNavigation() {
@@ -61,19 +64,10 @@ export class HeaderComponent extends BaseComponent {
     try {
       await logoutUser();
       stateManager.unsetState();
-      this.updateHeader();
+      this.render();
       router.redirect('/login');
     } catch (error) {
-      console.error('Logout failed:', error.message);
+      new PopupComponent({ message: error.message }).mount(document.body);
     }
-  }
-
-  updateHeader() {
-    this.render();
-    this.setupNavigation();
-  }
-
-  handleStateChange(newState) {
-    this.updateHeader();
   }
 }

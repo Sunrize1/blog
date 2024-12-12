@@ -3,6 +3,7 @@ export class Router {
     this.routes = {};
     this.currentComponent = null;
     window.addEventListener('popstate', () => this.handleRoute());
+    this.urlChangeListeners = [];
   }
 
   addRoute(path, component) {
@@ -31,6 +32,7 @@ export class Router {
       document.getElementById('app').innerHTML = '';
       this.currentComponent = new route.component(route.params);
       this.currentComponent.mount(document.getElementById('app'));
+      this.notifyUrlChange();
     } else {
       this.redirect('/');
     }
@@ -65,5 +67,13 @@ export class Router {
     }
 
     return null;
+  }
+
+  addUrlChangeListener(listener) {
+    this.urlChangeListeners.push(listener);
+  }
+
+  notifyUrlChange() {
+    this.urlChangeListeners.forEach(listener => listener());
   }
 }

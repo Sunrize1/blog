@@ -12,6 +12,10 @@ class StateManager {
     return this.state.token;
   }
 
+  getUserEmail() {
+    return this.state.email;
+  }
+
   getUserId() {
     return this.state.userId;
   }
@@ -49,7 +53,7 @@ class StateManager {
   }
 
   notifyStateChange() {
-    this.stateChangeListeners.forEach(listener => listener(this.state));
+    this.stateChangeListeners.forEach(listener => listener());
   }
 }
 
